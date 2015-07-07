@@ -1,10 +1,8 @@
 #![feature(convert)]
+extern crate num;
 
 mod lib;
 use std::env;
-
-#[cfg(test)]
-mod test;
 
 #[cfg_attr(test, allow(dead_code))]
 fn main() {
