@@ -1,9 +1,7 @@
-#![feature(concat_idents)]
+#![feature(convert)]
 
 mod lib;
 use std::env;
-use std::collections::HashMap;
-use syntax::parse::token;
 
 #[cfg(test)]
 mod test;
@@ -16,11 +14,10 @@ fn main() {
         return
     }
 
-    let ciphers = ["atbash", "affine"];
+    let msg = argv[2].as_str();
 
-    if ciphers.contains(argv[1]) {
-        let f = concat_idents!(token::str_to_ident(argv[1]), _encrypt);
-        let e = f("hello");
-        println!("{}", e);
+    match argv[1].as_str() {
+        "atbash" => { let e = lib::classical::atbash_encrypt(msg); println!("Ciphertext: {}", e.as_str()); },
+        _ => println!("Invalid cipher selected: {}", argv[1])
     }
 }

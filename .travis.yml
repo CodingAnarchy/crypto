@@ -1,5 +1,5 @@
 language: rust
-
+rust: nightly
 script:
   - rustc crypto.rs
   - rustc crypto.rs --test -o crypto_test && ./crypto_test
