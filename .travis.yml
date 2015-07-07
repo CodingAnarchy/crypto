@@ -1,5 +1,5 @@
 language: rust
 
 script:
-  rustc crypto.rs
-  rustc crypto.rs --test -o crypto_test && ./crypto_test
+  - rustc crypto.rs
+  - rustc crypto.rs --test -o crypto_test && ./crypto_test
