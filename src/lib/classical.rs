@@ -56,4 +56,10 @@ mod test {
         let s = "wvuvmwgsvvzhgdzoolugsvxzhgov";
         assert_eq!("defendtheeastwallofthecastle", atbash_decrypt(s).as_str())
     }
+
+    #[test]
+    fn test_affine_decrypt() {
+        let s = "ovcvgowqvvtpwrtssncwqvhtpwsv";
+        assert_eq!("defendtheeastwallofthecastle", affine_decrypt(7, 19, s).as_str())
+    }
 }
