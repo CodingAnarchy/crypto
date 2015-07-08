@@ -46,6 +46,12 @@ mod test {
     }
 
     #[test]
+    fn test_affine_encrypt() {
+        let s = "Defend the east wall of the castle.";
+        assert_eq!("kbsbykwabblfwvlqqpswabtlfwqb", affine_encrypt(17, 11, s).as_str())
+    }
+
+    #[test]
     fn test_atbash_decrypt() {
         let s = "wvuvmwgsvvzhgdzoolugsvxzhgov";
         assert_eq!("defendtheeastwallofthecastle", atbash_decrypt(s).as_str())
