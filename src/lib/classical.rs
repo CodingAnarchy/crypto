@@ -25,7 +25,6 @@ pub fn affine_decrypt(a: u32, b: u32, e: &str) -> String {
     for n in 1..26 {
         if (a * n) % 26 == 1 { x = n; break; }
     }
-    println!("X: {}", x);
     let mut msg = String::new();
     for ch in e.chars() {
         if !ch.is_alphabetic() { continue; }

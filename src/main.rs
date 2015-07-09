@@ -46,7 +46,13 @@ fn main() {
                 },
                 _ => println!("Invalid cipher selected: {}", argv[2])
             },
-        "decrypt" => {},
+        "decrypt" => match argv[2].as_str() {
+            "atbash" => {
+                let s = lib::classical::atbash_decrypt(msg);
+                println!("Plain text: {}", s.as_str());
+            },
+            _ => println!("Invalid cipher selected: {}", argv[2])
+        },
         _ => println!("Invalid mode selected: {}\nExpected encrypt or decrypt.", argv[1])
     }
 }
