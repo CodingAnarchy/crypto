@@ -5,3 +5,4 @@ authors = ["CodingAnarchy <mtanous22@gmail.com>"]
 
 [dependencies]
 num = "*"
+rand = "*"

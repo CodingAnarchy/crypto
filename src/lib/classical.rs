@@ -40,6 +40,9 @@ pub fn affine_decrypt(a: u32, b: u32, e: &str) -> String {
 #[cfg(test)]
 mod test {
     use super::*;
+    use num::integer::gcd;
+    use rand;
+    use rand::distributions::{IndependentSample, Range};
 
     #[test]
     fn test_atbash_encrypt() {
@@ -63,5 +66,19 @@ mod test {
     fn test_affine_decrypt() {
         let s = "ovcvgowqvvtpwrtssncwqvhtpwsv";
         assert_eq!("defendtheeastwallofthecastle", affine_decrypt(7, 19, s).as_str())
+    }
+
+    #[test]
+    fn test_affine() {
+        let mut rng = rand::thread_rng();
+        let s = "defendtheeastwallofthecastle";
+        let mut a = 26;
+        let between = Range::new(1, 25);
+        while gcd(a, 26) != 1 {
+            a = between.ind_sample(&mut rng);
+        }
+        let b = between.ind_sample(&mut rng);
+        let e = affine_encrypt(a, b, s);
+        assert_eq!("defendtheeastwallofthecastle", affine_decrypt(a, b, e.as_str()).as_str())
     }
 }
