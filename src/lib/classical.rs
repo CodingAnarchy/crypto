@@ -52,6 +52,38 @@ pub fn rot13_cipher(msg: &str, encrypt: bool) -> String {
     return caesar_cipher(13, msg, encrypt);
 }
 
+pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
+    let mut rails = vec![String::new(); key as usize];
+    let mut e = String::new();
+    if encrypt {
+        let mut forward = true;
+        let mut i = 0;
+        for ch in msg.chars() {
+            rails[i].push(ch);
+            if forward {
+                if i == rails.len() - 1 {
+                    forward = false;
+                    i -= 1;
+                } else {
+                    i += 1;
+                }
+            } else {
+                if i == 0 {
+                    forward = true;
+                    i += 1;
+                } else {
+                    i -= 1;
+                }
+            }
+        }
+        for n in 0..rails.len() {
+            println!("{}: {}", n, rails[n].as_str());
+            e.push_str(rails[n].as_str());
+        }
+    }
+    return e;
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -117,5 +149,13 @@ mod test {
         let e = "nggnpxngqnja";
         assert_eq!(e, rot13_cipher(s, true));
         assert_eq!(s, rot13_cipher(e, false));
+    }
+
+    #[test]
+    fn test_railfence() {
+        let s = "attackatdawn";
+        assert_eq!("acdtaktantaw", railfence_cipher(3, s, true));
+        assert_eq!("aatktntcdwaa", railfence_cipher(4, s, true));
+        assert_eq!("adttatawaknc", railfence_cipher(5, s, true));
     }
 }
