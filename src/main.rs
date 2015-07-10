@@ -44,6 +44,17 @@ fn main() {
                 let e = lib::classical::affine_encrypt(a, b, msg);
                 println!("Ciphertext: {}", e.as_str());
             },
+            "caesar" => {
+                let mut k: u32 = 26;
+                while k > 25 {
+                    println!("Enter key (must be between 1 and 25): ");
+                    stdin.read_line(&mut input).unwrap();
+                    k = input.trim_right().parse::<u32>().ok().unwrap();
+                    input.clear();
+                }
+                let e = lib::classical::caesar_cipher(k as i32, msg, true);
+                println!("Ciphertext: {}", e.as_str());
+            },
             "rot13" => {
                 let e = lib::classical::rot13_cipher(msg, true);
                 println!("Ciphertext: {}", e.as_str());
@@ -71,6 +82,17 @@ fn main() {
                     input.clear();
                 }
                 let e = lib::classical::affine_decrypt(a, b, msg);
+                println!("Plain text: {}", e.as_str());
+            },
+            "caesar" => {
+                let mut k: u32 = 26;
+                while k > 25 {
+                    println!("Enter key (must be between 1 and 25): ");
+                    stdin.read_line(&mut input).unwrap();
+                    k = input.trim_right().parse::<u32>().ok().unwrap();
+                    input.clear();
+                }
+                let e = lib::classical::caesar_cipher(k as i32, msg, false);
                 println!("Plain text: {}", e.as_str());
             },
             "rot13" => {
