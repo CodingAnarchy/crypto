@@ -44,6 +44,10 @@ fn main() {
                 let e = lib::classical::affine_encrypt(a, b, msg);
                 println!("Ciphertext: {}", e.as_str());
             },
+            "rot13" => {
+                let e = lib::classical::rot13_cipher(msg, true);
+                println!("Ciphertext: {}", e.as_str());
+            },
             _ => println!("Invalid cipher selected: {}", argv[2])
         },
         "decrypt" => match argv[2].as_str() {
@@ -67,7 +71,11 @@ fn main() {
                     input.clear();
                 }
                 let e = lib::classical::affine_decrypt(a, b, msg);
-                println!("Ciphertext: {}", e.as_str());
+                println!("Plain text: {}", e.as_str());
+            },
+            "rot13" => {
+                let e = lib::classical::rot13_cipher(msg, false);
+                println!("Plain text: {}", e.as_str());
             },
             _ => println!("Invalid cipher selected: {}", argv[2])
         },
