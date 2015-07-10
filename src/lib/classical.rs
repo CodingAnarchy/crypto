@@ -36,6 +36,22 @@ pub fn affine_decrypt(a: u32, b: u32, e: &str) -> String {
     return msg;
 }
 
+pub fn caesar_cipher(mut key: i32, msg: &str, encrypt: bool) -> String {
+    let mut e = String::new();
+    if !encrypt { key = -key; }
+    for ch in msg.chars() {
+        if !ch.is_alphabetic() { continue; }
+        let c = (ch.to_digit(36).unwrap() - 10) as i32;  // Need to shift down by 10 for range of 0-25
+        let s = char::from_digit((26i32 + c + key) as u32 % 26 + 10, 36).unwrap();
+        e.push(s);
+    }
+    return e;
+}
+
+pub fn rot13_cipher(msg: &str, encrypt: bool) -> String {
+    return caesar_cipher(13, msg, encrypt);
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -71,13 +87,35 @@ mod test {
     fn test_affine() {
         let mut rng = rand::thread_rng();
         let s = "defendtheeastwallofthecastle";
-        let mut a = 26;
         let between = Range::new(1, 25);
-        while gcd(a, 26) != 1 {
-            a = between.ind_sample(&mut rng);
+        for _ in 1..50 {
+            let mut a = 26;
+            while gcd(a, 26) != 1 {
+                a = between.ind_sample(&mut rng);
+            }
+            let b = between.ind_sample(&mut rng);
+            let e = affine_encrypt(a, b, s);
+            assert_eq!(s, affine_decrypt(a, b, e.as_str()).as_str())
         }
-        let b = between.ind_sample(&mut rng);
-        let e = affine_encrypt(a, b, s);
-        assert_eq!("defendtheeastwallofthecastle", affine_decrypt(a, b, e.as_str()).as_str())
+    }
+
+    #[test]
+    fn test_caesar() {
+        let mut rng = rand::thread_rng();
+        let s = "attackatdawn";
+        let key_range = Range::new(1, 25);
+        for _ in 1..50 {
+            let k = key_range.ind_sample(&mut rng);
+            let e = caesar_cipher(k, s, true);
+            assert_eq!(s, caesar_cipher(k, e.as_str(), false));
+        }
+    }
+
+    #[test]
+    fn test_rot13() {
+        let s = "attackatdawn";
+        let e = "nggnpxngqnja";
+        assert_eq!(e, rot13_cipher(s, true));
+        assert_eq!(s, rot13_cipher(e, false));
     }
 }
