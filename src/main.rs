@@ -19,88 +19,47 @@ fn main() {
     let msg = argv[3].as_str();
     let mut stdin = io::stdin();
     let mut input = String::new();
+    let mut output = "Plain text: ";
+    let mut e = String::new();
 
-    match argv[1].as_str() {
-        "encrypt" => match argv[2].as_str() {
-            "atbash" => {
-                let e = lib::classical::atbash_encrypt(msg);
-                println!("Ciphertext: {}", e.as_str());
-            },
-            "affine" => {
-                let mut a: u32 = 26;
-                let mut b: u32 = 26;
-                while gcd(a, 26) != 1 || a > 25 {
-                    println!("Enter a (must be relatively prime with 26): ");
-                    stdin.read_line(&mut input).unwrap();
-                    a = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                while b > 25 {
-                    println!("Enter b (must be between 1 and 25): ");
-                    stdin.read_line(&mut input).unwrap();
-                    b = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                let e = lib::classical::affine_encrypt(a, b, msg);
-                println!("Ciphertext: {}", e.as_str());
-            },
-            "caesar" => {
-                let mut k: u32 = 26;
-                while k > 25 {
-                    println!("Enter key (must be between 1 and 25): ");
-                    stdin.read_line(&mut input).unwrap();
-                    k = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                let e = lib::classical::caesar_cipher(k as i32, msg, true);
-                println!("Ciphertext: {}", e.as_str());
-            },
-            "rot13" => {
-                let e = lib::classical::rot13_cipher(msg, true);
-                println!("Ciphertext: {}", e.as_str());
-            },
-            _ => println!("Invalid cipher selected: {}", argv[2])
+    let encrypt = argv[1].as_str() == "encrypt";
+    if encrypt { output = "Ciphertext: "; }
+
+    match argv[2].as_str() {
+        "atbash" => {
+            e = lib::classical::atbash_cipher(msg, encrypt);
         },
-        "decrypt" => match argv[2].as_str() {
-            "atbash" => {
-                let s = lib::classical::atbash_decrypt(msg);
-                println!("Plain text: {}", s.as_str());
-            },
-            "affine" => {
-                let mut a: u32 = 26;
-                let mut b: u32 = 26;
-                while a > 25 {
-                    println!("Enter a (must be between 1 and 25): ");
-                    stdin.read_line(&mut input).unwrap();
-                    a = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                while b > 25 {
-                    println!("Enter b (must be between 1 and 25): ");
-                    stdin.read_line(&mut input).unwrap();
-                    b = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                let e = lib::classical::affine_decrypt(a, b, msg);
-                println!("Plain text: {}", e.as_str());
-            },
-            "caesar" => {
-                let mut k: u32 = 26;
-                while k > 25 {
-                    println!("Enter key (must be between 1 and 25): ");
-                    stdin.read_line(&mut input).unwrap();
-                    k = input.trim_right().parse::<u32>().ok().unwrap();
-                    input.clear();
-                }
-                let e = lib::classical::caesar_cipher(k as i32, msg, false);
-                println!("Plain text: {}", e.as_str());
-            },
-            "rot13" => {
-                let e = lib::classical::rot13_cipher(msg, false);
-                println!("Plain text: {}", e.as_str());
-            },
-            _ => println!("Invalid cipher selected: {}", argv[2])
+        "affine" => {
+            let mut a: u32 = 26;
+            let mut b: u32 = 26;
+            while gcd(a, 26) != 1 || a > 25 {
+                println!("Enter a (must be relatively prime with 26): ");
+                stdin.read_line(&mut input).unwrap();
+                a = input.trim_right().parse::<u32>().ok().unwrap();
+                input.clear();
+            }
+            while b > 25 {
+                println!("Enter b (must be between 1 and 25): ");
+                stdin.read_line(&mut input).unwrap();
+                b = input.trim_right().parse::<u32>().ok().unwrap();
+                input.clear();
+            }
+            e = lib::classical::affine_cipher(a, b, msg, encrypt);
         },
-        _ => println!("Invalid mode selected: {}\nExpected encrypt or decrypt.", argv[1])
+        "caesar" => {
+            let mut k: u32 = 26;
+            while k > 25 {
+                println!("Enter key (must be between 1 and 25): ");
+                stdin.read_line(&mut input).unwrap();
+                k = input.trim_right().parse::<u32>().ok().unwrap();
+                input.clear();
+            }
+            e = lib::classical::caesar_cipher(k as i32, msg, encrypt);
+        },
+        "rot13" => {
+            e = lib::classical::rot13_cipher(msg, encrypt);
+        },
+        _ => println!("Invalid cipher selected: {}", argv[2])
     }
+    println!("{} {}", output, e.as_str());
 }
