@@ -56,6 +56,7 @@ pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
     let mut rails = vec![String::new(); key as usize];
     let mut e = String::new();
     if encrypt {
+        // Possibly this could be optimized to not have to iterate through string array
         let mut forward = true;
         let mut i = 0;
         for ch in msg.chars() {
@@ -77,8 +78,31 @@ pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
             }
         }
         for n in 0..rails.len() {
-            println!("{}: {}", n, rails[n].as_str());
             e.push_str(rails[n].as_str());
+        }
+    } else {
+        e = String::from(msg);
+        let mut gap: i32;
+        let mut alt_gap: i32;
+        let mut idx = 0;
+        for r in 0..key {
+            let mut pos = r;
+            let mut gap_used = false;
+            gap = (key - 1 - r) * 2 ;
+            if r != 0 && gap != 0 { alt_gap = (key - 1) * 2 - gap; } else { alt_gap = 0; }
+            if gap == 0 { gap = (key - 1) * 2; }
+            while pos < msg.len() as i32 {
+                e.remove(pos as usize);
+                e.insert(pos as usize, msg.chars().nth(idx as usize).unwrap());
+                if alt_gap != 0 && gap_used {
+                    gap_used = false;
+                    pos += alt_gap;
+                } else {
+                    gap_used = true;
+                    pos += gap;
+                }
+                idx += 1;
+            }
         }
     }
     return e;
@@ -153,9 +177,15 @@ mod test {
 
     #[test]
     fn test_railfence() {
+        // Encrypt
         let s = "attackatdawn";
         assert_eq!("acdtaktantaw", railfence_cipher(3, s, true));
         assert_eq!("aatktntcdwaa", railfence_cipher(4, s, true));
         assert_eq!("adttatawaknc", railfence_cipher(5, s, true));
+
+        // decrypt
+        assert_eq!(s, railfence_cipher(3, "acdtaktantaw", false));
+        assert_eq!(s, railfence_cipher(4, "aatktntcdwaa", false));
+        assert_eq!(s, railfence_cipher(5, "adttatawaknc", false));
     }
 }
