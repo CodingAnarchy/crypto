@@ -70,6 +70,35 @@ pub fn vigenere_cipher(keyword: &str, msg: &str, encrypt: bool) -> String {
     return e;
 }
 
+pub fn autokey_cipher(keyword: &str, msg: &str, encrypt: bool) -> String {
+    let mut key = String::from(keyword);
+    if encrypt {
+        key.push_str(msg);
+        println!("{}", key);
+        return vigenere_cipher(key.as_str(), msg, true);
+    } else {
+        let mut k: i32;
+        let mut kch;
+        let mut kc;
+        let mut v: Vec<char> = vec![];
+        let mut keys = keyword.chars();
+        let mut e = String::new();
+        for ch in msg.chars() {
+            kch = keys.next();
+            if kch == None {
+                kc = *v.first().unwrap();
+                v.remove(0);
+            } else { kc = kch.unwrap(); }
+            k = (kc.to_digit(36).unwrap() - 10) as i32;
+            k = -k;
+            let s = caesar_shift(ch, k);
+            e.push(s);
+            v.push(s);
+        }
+        return e;
+    }
+}
+
 pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
     let mut rails = vec![String::new(); key as usize];
     let mut e = String::new();
@@ -198,5 +227,14 @@ mod test {
         let e = "iswxvibjexiggbocewkbjeviggqs";
         assert_eq!(e, vigenere_cipher(keyword, s, true));
         assert_eq!(s, vigenere_cipher(keyword, e, false));
+    }
+
+    #[test]
+    fn test_autokey() {
+        let keyword = "fortification";
+        let s = "defendtheeastwallofthecastle";
+        let e = "iswxvibjexiggzeqpbimoigakmhe";
+        assert_eq!(e, autokey_cipher(keyword, s, true));
+        assert_eq!(s, autokey_cipher(keyword, e, false));
     }
 }
