@@ -63,8 +63,13 @@ fn main() {
             println!("Enter number of rails: ");
             stdin.read_line(&mut input).unwrap();
             let k = input.trim_right().parse::<i32>().ok().unwrap();
-            input.clear();
             e = lib::classical::railfence_cipher(k, msg, encrypt);
+        },
+        "vigenere" => {
+            println!("Enter keyword: ");
+            stdin.read_line(&mut input).unwrap();
+            let key = input.trim_right();
+            e = lib::classical::vigenere_cipher(key, msg, encrypt);
         },
         _ => println!("Invalid cipher selected: {}", argv[2])
     }
