@@ -30,13 +30,18 @@ pub fn affine_cipher(a: u32, b: u32, msg: &str, encrypt: bool) -> String {
     return e;
 }
 
+fn caesar_shift(ch: char, k: i32) -> char {
+    let c = (ch.to_digit(36).unwrap() - 10) as i32;  // Need to shift down by 10 for range of 0-25
+    let s = char::from_digit((26i32 + c + k) as u32 % 26 + 10, 36).unwrap();
+    return s;
+}
+
 pub fn caesar_cipher(mut key: i32, msg: &str, encrypt: bool) -> String {
     let mut e = String::new();
     if !encrypt { key = -key; }
     for ch in msg.chars() {
         if !ch.is_alphabetic() { continue; }
-        let c = (ch.to_digit(36).unwrap() - 10) as i32;  // Need to shift down by 10 for range of 0-25
-        let s = char::from_digit((26i32 + c + key) as u32 % 26 + 10, 36).unwrap();
+        let s = caesar_shift(ch, key);
         e.push(s);
     }
     return e;
@@ -44,6 +49,25 @@ pub fn caesar_cipher(mut key: i32, msg: &str, encrypt: bool) -> String {
 
 pub fn rot13_cipher(msg: &str, encrypt: bool) -> String {
     return caesar_cipher(13, msg, encrypt);
+}
+
+pub fn vigenere_cipher(keyword: &str, msg: &str, encrypt: bool) -> String {
+    let mut e = String::new();
+    let mut keys = keyword.chars();
+    let mut kch;
+    let mut k: i32;
+    for ch in msg.chars() {
+        kch = keys.next();
+        if kch == None {
+            keys = keyword.chars();
+            kch = keys.next();
+        }
+        k = (kch.unwrap().to_digit(36).unwrap() - 10) as i32;
+        if !encrypt { k = -k; }
+        let s = caesar_shift(ch, k);
+        e.push(s);
+    }
+    return e;
 }
 
 pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
@@ -165,5 +189,14 @@ mod test {
         assert_eq!(s, railfence_cipher(3, "acdtaktantaw", false));
         assert_eq!(s, railfence_cipher(4, "aatktntcdwaa", false));
         assert_eq!(s, railfence_cipher(5, "adttatawaknc", false));
+    }
+
+    #[test]
+    fn test_vigenere() {
+        let keyword = "fortification";
+        let s = "defendtheeastwallofthecastle";
+        let e = "iswxvibjexiggbocewkbjeviggqs";
+        assert_eq!(e, vigenere_cipher(keyword, s, true));
+        assert_eq!(s, vigenere_cipher(keyword, e, false));
     }
 }

@@ -59,6 +59,13 @@ fn main() {
         "rot13" => {
             e = lib::classical::rot13_cipher(msg, encrypt);
         },
+        "railfence" => {
+            println!("Enter number of rails: ");
+            stdin.read_line(&mut input).unwrap();
+            let k = input.trim_right().parse::<i32>().ok().unwrap();
+            input.clear();
+            e = lib::classical::railfence_cipher(k, msg, encrypt);
+        },
         _ => println!("Invalid cipher selected: {}", argv[2])
     }
     println!("{} {}", output, e.as_str());
