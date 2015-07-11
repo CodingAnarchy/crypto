@@ -74,7 +74,6 @@ pub fn autokey_cipher(keyword: &str, msg: &str, encrypt: bool) -> String {
     let mut key = String::from(keyword);
     if encrypt {
         key.push_str(msg);
-        println!("{}", key);
         return vigenere_cipher(key.as_str(), msg, true);
     } else {
         let mut k: i32;

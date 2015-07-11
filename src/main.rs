@@ -46,6 +46,12 @@ fn main() {
             }
             e = lib::classical::affine_cipher(a, b, msg, encrypt);
         },
+        "autokey" => {
+            println!("Enter keyword: ");
+            stdin.read_line(&mut input).unwrap();
+            let key = input.trim_right();
+            e = lib::classical::autokey_cipher(key, msg, encrypt);
+        }
         "caesar" => {
             let mut k: u32 = 26;
             while k > 25 {
