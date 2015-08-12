@@ -17,7 +17,7 @@ fn main() {
     }
 
     let msg = argv[3].as_str();
-    let mut stdin = io::stdin();
+    let stdin = io::stdin();
     let mut input = String::new();
     let mut output = "Plain text: ";
     let mut e = String::new();
