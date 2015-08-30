@@ -182,6 +182,7 @@ pub fn substitution_cipher(key: &str, msg: &str, encrypt: bool) -> String {
             }
         }
     }
+    return e;
 }
 
 #[cfg(test)]
