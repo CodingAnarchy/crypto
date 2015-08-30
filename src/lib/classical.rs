@@ -266,4 +266,13 @@ mod test {
         assert_eq!(e, autokey_cipher(keyword, s, true));
         assert_eq!(s, autokey_cipher(keyword, e, false));
     }
+
+    #[test]
+    fn test_substitution(){
+        let keyword = "zebra";
+        let s = "defendtheeastwallofthecastle";
+        let e = "racalrsfaazqsvzjjmcsfabzqsja";
+        assert_eq!(e, substitution_cipher(keyword, s, true));
+        assert_eq!(s, substitution_cipher(keyword, e, false));
+    }
 }
