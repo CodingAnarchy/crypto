@@ -1,4 +1,6 @@
 use std::char;
+use std;
+use lib::utils;
 
 pub fn atbash_cipher(msg: &str, encrypt: bool) -> String {
     return affine_cipher(25, 25, msg, encrypt);
@@ -152,6 +154,34 @@ pub fn railfence_cipher(key: i32, msg: &str, encrypt: bool) -> String {
         }
     }
     return e;
+}
+
+pub fn substitution_cipher(key: &str, msg: &str, encrypt: bool) -> String {
+    let alpha = utils::cipher_alphabet(key);
+    let mut e = String::new();
+    if encrypt {
+        for ch in msg.chars() {
+            if !ch.is_alphabetic() { continue; }
+            let p = ch.to_digit(36).unwrap() - 10;  // Need to shift down by 10 for range of 0-25
+            let c = alpha.chars().nth(p as usize).unwrap();
+            e.push(c);
+        }
+    } else {
+        for ch in msg.chars() {
+            if !ch.is_alphabetic() { continue; }
+            let mut idx = 0;
+            for c in alpha.chars() {
+                if c == ch {
+                    e.push(utils::ASCII_LOWER[idx]);
+                    break;
+                }
+                idx += 1;
+                if idx >= 26 {
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]

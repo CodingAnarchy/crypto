@@ -71,6 +71,11 @@ fn main() {
             let k = input.trim_right().parse::<i32>().ok().unwrap();
             e = lib::classical::railfence_cipher(k, msg, encrypt);
         },
+        "substitution" => {
+            println!("Enter keyphrase: ");
+            stdin.read_line(&mut input).unwrap();
+            e = lib::classical::substitution_cipher(input.as_str(), msg, encrypt);
+        }
         "vigenere" => {
             println!("Enter keyword: ");
             stdin.read_line(&mut input).unwrap();
